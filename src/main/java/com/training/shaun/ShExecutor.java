@@ -19,7 +19,7 @@ public class ShExecutor {
     public ShExecutor(final CloseableHttpClient httpclient) {
         super();
         if (httpclient == null) {
-            this.client = ShHttpClientBuild.create().timeout(30000).retry(5, true).build();
+            this.client = ShHttpClientBuild.create().defaut().build();
         } else {
             this.client = httpclient;
         }

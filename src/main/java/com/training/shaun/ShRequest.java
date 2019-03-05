@@ -64,7 +64,10 @@ public class ShRequest {
 //    }
 
     public ShResponse execute() {
-        return new ShExecutor(null).execute(this);
+        ShExecutor e = new ShExecutor(null);
+        ShResponse response = e.execute(this);
+        e.close();
+        return response;
     }
 
     public ShResponse execute(ShExecutor sExecutor) {

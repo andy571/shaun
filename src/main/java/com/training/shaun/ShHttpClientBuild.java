@@ -54,7 +54,9 @@ public class ShHttpClientBuild extends HttpClientBuilder {
         return new ShExecutor(this.build());
     }
 
-    public PoolingHttpClientConnectionManager connManager = null;
+    public ShHttpClientBuild defaut() {
+        return  this.timeout(30000, true).proxy(ShProxyInfo.noProxy()).retry(3, true);
+    }
 
     public ShHttpClientBuild timeout(int timeout){
         return timeout(timeout, true);
@@ -70,6 +72,8 @@ public class ShHttpClientBuild extends HttpClientBuilder {
                 .build();
         return (ShHttpClientBuild) this.setDefaultRequestConfig(config);
     }
+
+    public PoolingHttpClientConnectionManager connManager = null;
 
     public ShHttpClientBuild proxy(ShProxyInfo proxyInfo) {
         SSLContext sslContext = null;
