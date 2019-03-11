@@ -4,6 +4,8 @@ import com.training.shaun.socks.ThreadLocalProxyAuthenticator;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -15,6 +17,8 @@ import java.io.IOException;
 public class ShExecutor {
 
     private final CloseableHttpClient client;
+
+    private final Logger log = LoggerFactory.getLogger(ShExecutor.class);
 
     public ShExecutor(final CloseableHttpClient httpclient) {
         super();
@@ -30,19 +34,41 @@ public class ShExecutor {
     }
 
     public ShResponse execute(final ShRequest shRequest) {
+        CloseableHttpResponse cResponse = null;
+        Exception exception = null;
         try {
-            CloseableHttpResponse cResponse = client.execute(shRequest.request);
-
+            cResponse = client.execute(shRequest.request);
             ShResponse shResponse = new ShResponse(cResponse);
             shResponse.returnResponse();
 
-            cResponse.close();
-            return shResponse;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.debug("execute fail", e);
+            exception = e;
+        } finally {
+            if (cResponse != null) {
+                try {
+                    cResponse.close();
+                } catch (IOException e) {
+                    log.debug("execute fail", e);
+                }
+            }
+            return new ShResponse(null, exception);
         }
-        return new ShResponse(null);
+
     }
+//        try {
+//            CloseableHttpResponse cResponse = client.execute(shRequest.request);
+//
+//            ShResponse shResponse = new ShResponse(cResponse);
+//            shResponse.returnResponse();
+//
+//            cResponse.close();
+//            return shResponse;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ShResponse(null, e);
+//        }
+//    }
 
 //    public ShResponse execute(final ShRequest shRequest) throws IOException {
 //
@@ -60,7 +86,7 @@ public class ShExecutor {
             ThreadLocalProxyAuthenticator.getInstance().clearCredential();
             client.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.debug("close fail" ,e);
         }
     }
 

@@ -6,6 +6,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,12 +21,22 @@ public class ShResponse {
 
     public final HttpResponse response;
 
+    public final Exception exception;
+
+    private final Logger log = LoggerFactory.getLogger(ShResponse.class);
+
     public StatusLine getStatusLine() {
-        return response.getStatusLine();
+        if (response != null) {
+            return response.getStatusLine();
+        }
+        return null;
     }
 
     public int getStatusCode() {
-        return response.getStatusLine().getStatusCode();
+        if (response != null) {
+            return response.getStatusLine().getStatusCode();
+        }
+        return -1;
     }
 
     public byte[] getEntityAsBytes() {
@@ -33,7 +45,7 @@ public class ShResponse {
             try {
                 return EntityUtils.toByteArray(response.getEntity());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.debug("response", e);
             }
         }
         return null;
@@ -55,6 +67,13 @@ public class ShResponse {
     ShResponse(final HttpResponse response) {
         super();
         this.response = response;
+        this.exception = null;
+    }
+
+    ShResponse(final HttpResponse response, final Exception exception) {
+        super();
+        this.response = response;
+        this.exception = exception;
     }
 
     public HttpResponse returnResponse() throws IOException {
@@ -69,7 +88,6 @@ public class ShResponse {
                 this.response.setEntity(byteArrayEntity);
             }
             return this.response;
-
         }  finally {
 //            this.consumed = true;
         }

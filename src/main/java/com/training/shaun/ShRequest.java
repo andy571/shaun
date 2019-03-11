@@ -5,10 +5,10 @@ import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -52,7 +52,7 @@ public class ShRequest {
         return new ShRequest(new HttpOptions(uri));
     }
 
-    ShRequest(final HttpRequestBase request) {
+    public ShRequest(final HttpRequestBase request) {
         super();
         this.request = request;
     }
@@ -97,6 +97,13 @@ public class ShRequest {
 
     public ShRequest setHeaders(final Header[] headers) {
         this.request.setHeaders(headers);
+        return this;
+    }
+
+    public ShRequest setHeaders(final Map<String, String> headers) {
+        for (String name: headers.keySet()) {
+            this.request.setHeader(name, headers.get(name));
+        }
         return this;
     }
 
