@@ -35,15 +35,14 @@ public class ShExecutor {
 
     public ShResponse execute(final ShRequest shRequest) {
         CloseableHttpResponse cResponse = null;
-        Exception exception = null;
+        ShResponse shResponse = null;
         try {
             cResponse = client.execute(shRequest.request);
-            ShResponse shResponse = new ShResponse(cResponse);
+            shResponse = new ShResponse(cResponse);
             shResponse.returnResponse();
-
         } catch (Exception e) {
             log.debug("execute fail", e);
-            exception = e;
+            shResponse = new ShResponse(cResponse, e);
         } finally {
             if (cResponse != null) {
                 try {
@@ -52,9 +51,8 @@ public class ShExecutor {
                     log.debug("execute fail", e);
                 }
             }
-            return new ShResponse(null, exception);
         }
-
+        return shResponse;
     }
 //        try {
 //            CloseableHttpResponse cResponse = client.execute(shRequest.request);
