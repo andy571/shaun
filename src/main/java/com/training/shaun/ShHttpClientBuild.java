@@ -63,11 +63,15 @@ public class ShHttpClientBuild extends HttpClientBuilder {
     }
 
     public ShHttpClientBuild timeout(int timeout, boolean redirectEnable) {
+        return timeout(timeout/3, timeout/3, timeout/3, true);
+    }
+
+    public ShHttpClientBuild timeout(int connectionRequestTimeout, int connectTimeout, int socketTimeout, boolean redirectEnable) {
         // 配置请求的超时设置
         RequestConfig config = RequestConfig.custom()
-                .setConnectionRequestTimeout(timeout/3)
-                .setConnectTimeout(timeout/3)
-                .setSocketTimeout(timeout/3)
+                .setConnectionRequestTimeout(connectionRequestTimeout)
+                .setConnectTimeout(connectTimeout)
+                .setSocketTimeout(socketTimeout)
                 .setRedirectsEnabled(redirectEnable)
                 .build();
         return (ShHttpClientBuild) this.setDefaultRequestConfig(config);
