@@ -131,6 +131,10 @@ public class ShRequest {
         return body(new ByteArrayEntity(b, off, len));
     }
 
+    public ShRequest bodyString(final String s) {
+        return bodyString(s, "UTF-8");
+    }
+
     public ShRequest bodyString(final String s, final String charset) {
         final Charset cs = Charset.forName(charset);
         final byte[] raw = cs != null ? s.getBytes(cs) : s.getBytes();
