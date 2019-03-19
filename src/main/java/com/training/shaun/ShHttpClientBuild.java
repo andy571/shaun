@@ -181,14 +181,16 @@ public class ShHttpClientBuild extends HttpClientBuilder {
                 if (exception instanceof SSLException) {// SSL握手异常
                     return false;
                 }
-
-                HttpClientContext clientContext = HttpClientContext.adapt(context);
-                HttpRequest request = clientContext.getRequest();
-                // 如果请求是幂等的，就再次尝试
-                if (!(request instanceof HttpEntityEnclosingRequest)) {
-                    return true;
-                }
-                return false;
+//                http://ifeve.com/1-5-exception-handling/
+//                请注意，为了处理安全自动的重试RFC-2616协议中定义的请求方法GET，HEAD，PUT，DELETE，OPTIONS和TRACE，可以用StandardHttpRequestRetryHandler代替使用默认的。
+//                HttpClientContext clientContext = HttpClientContext.adapt(context);
+//                HttpRequest request = clientContext.getRequest();
+//                // 如果请求是幂等的，就再次尝试
+//                if (!(request instanceof HttpEntityEnclosingRequest)) {
+//                    return true;
+//                }
+//                return false;
+                return true;
             }
         };
         this.setRetryHandler(httpRequestRetryHandler);
